@@ -2,11 +2,16 @@ package lastcmt
 
 import (
 	"context"
+	"regexp"
 	"slices"
 	"strings"
 
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
+)
+
+var (
+	rBotSuffix = regexp.MustCompile(`\[bot\]$`)
 )
 
 type Client struct {
@@ -95,7 +100,10 @@ func (client *Client) getViewer(ctx context.Context) (string, error) {
 		return "", err
 	}
 
-	return q.Viewer.Login, nil
+	login := q.Viewer.Login
+	login = rBotSuffix.ReplaceAllString(login, "")
+
+	return login, nil
 }
 
 func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) {
