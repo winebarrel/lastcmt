@@ -71,7 +71,6 @@ func (client *Client) CommentWithMinimize(ctx context.Context, body string) (str
 		}
 
 		if !c.isMinimized {
-
 			err := client.minimizeComment(ctx, c.id)
 
 			if err != nil {
