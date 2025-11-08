@@ -1,6 +1,6 @@
 # lastcmt
 
-lastcmt is a CLI that comments on Pull Request and minimizes previous comments.
+lastcmt is a CLI that comments on the Pull Request and minimizes previous comments.
 
 ![](https://github.com/user-attachments/assets/2a1b8bb1-dd0d-4dc1-a1d3-3923925dc0c5)
 
