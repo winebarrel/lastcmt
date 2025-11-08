@@ -1,0 +1,25 @@
+version: 2
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - main: ./cmd/lastcmt
+    ldflags:
+      - -X main.version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+checksum:
+  name_template: "checksums.txt"
+nfpms:
+  - file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Arch }}"
+    homepage: https://github.com/winebarrel/lastcmt
+    description: lastcmt is a CLI that comments on the PR and minimizes previous comments.
+    license: MIT
+    maintainer: "Genki Sugawara <sugawara@winebarrel.jp>"
+    formats:
+      - apk
+      - deb
+      - rpm
