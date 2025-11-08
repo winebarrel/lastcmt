@@ -2,6 +2,7 @@ package lastcmt
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"slices"
 	"strings"
@@ -42,6 +43,7 @@ type pullRequest struct {
 
 func (client *Client) CommentWithMinimize(ctx context.Context, body string) (string, error) {
 	login, err := client.getViewer(ctx)
+	fmt.Println("login:", login)
 
 	if err != nil {
 		return "", err
@@ -63,19 +65,29 @@ func (client *Client) CommentWithMinimize(ctx context.Context, body string) (str
 	comments := []pullRequestComment{}
 
 	for _, c := range pr.comments {
+		fmt.Println("------------------------------")
+		fmt.Println("body:", body)
+		fmt.Println("c.author == login:", c.author == login)
+		fmt.Println("strings.Contains:", strings.Contains(c.body, client.HTMLCommentID()))
+		fmt.Println("------------------------------")
+
 		if c.author == login && strings.Contains(c.body, client.HTMLCommentID()) {
 			comments = append(comments, c)
 		}
 	}
 
+	fmt.Printf("comments: %+v\n", comments)
+
 	commentsLen := len(comments)
 
 	for i, c := range comments {
 		if commentsLen-i <= client.Left {
+			fmt.Println("break for left opts", comments)
 			break
 		}
 
 		if !c.isMinimized {
+			fmt.Println("minimized:", c.body)
 			err := client.minimizeComment(ctx, c.id)
 
 			if err != nil {
