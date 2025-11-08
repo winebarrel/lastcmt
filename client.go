@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
@@ -31,7 +32,7 @@ type pullRequestComment struct {
 	id          githubv4.ID
 	body        string
 	isMinimized bool
-	createdAt   githubv4.DateTime
+	createdAt   time.Time
 	author      string
 }
 
@@ -164,12 +165,12 @@ func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) 
 			id:          c.ID,
 			body:        c.Body,
 			isMinimized: c.IsMinimized,
-			createdAt:   c.CreatedAt,
+			createdAt:   c.CreatedAt.Time,
 			author:      c.Author.Login,
 		})
 	}
 
-	slices.SortFunc(pr.comments, func(i, j pullRequestComment) int { return i.createdAt.Compare(j.createdAt.Time) })
+	slices.SortFunc(pr.comments, func(i, j pullRequestComment) int { return i.createdAt.Compare(j.createdAt) })
 
 	return pr, nil
 }
