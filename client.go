@@ -68,6 +68,8 @@ func (client *Client) CommentWithMinimize(ctx context.Context, body string) (str
 		fmt.Println("------------------------------")
 		fmt.Println("body:", body)
 		fmt.Println("c.author == login:", c.author == login)
+		fmt.Println("c.author:", c.author)
+		fmt.Println("login:", login)
 		fmt.Println("strings.Contains:", strings.Contains(c.body, client.HTMLCommentID()))
 		fmt.Println("------------------------------")
 
