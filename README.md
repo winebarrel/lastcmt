@@ -1,6 +1,6 @@
 # lastcmt
 
-lastcmt is a CLI that comments on the PR and minimizes previous comments.
+lastcmt is a CLI that comments on Pull Request and minimizes previous comments.
 
 ![](https://github.com/user-attachments/assets/2a1b8bb1-dd0d-4dc1-a1d3-3923925dc0c5)
 
@@ -16,7 +16,7 @@ Flags:
   -h, --help             Show help.
   -o, --owner=STRING     Owner name.
   -r, --repo=STRING      Repo name.
-  -n, --number=INT       Issues/PR number.
+  -n, --number=INT       Pull Request number.
   -k, --key="lastcmt"    Identification key.
       --token=STRING     Auth token ($GITHUB_TOKEN).
       --left=0           Number of comments not minimized.
