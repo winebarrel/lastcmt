@@ -2,7 +2,7 @@
 
 lastcmt is a CLI that comments on the PR and minimizes previous comments.
 
-![](https://github.com/user-attachments/assets/88dfcef4-e52d-4ac7-9619-174dcbbf32c6)
+![](https://github.com/user-attachments/assets/2a1b8bb1-dd0d-4dc1-a1d3-3923925dc0c5)
 
 ## Usage
 
