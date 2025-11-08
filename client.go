@@ -2,6 +2,7 @@ package lastcmt
 
 import (
 	"context"
+	"slices"
 	"strings"
 
 	"github.com/shurcooL/githubv4"
@@ -25,6 +26,7 @@ type pullRequestComment struct {
 	id          githubv4.ID
 	body        string
 	isMinimized bool
+	createdAt   githubv4.DateTime
 	author      string
 }
 
@@ -53,8 +55,23 @@ func (client *Client) CommentWithMinimize(ctx context.Context, body string) (str
 		return "", err
 	}
 
+	comments := []pullRequestComment{}
+
 	for _, c := range pr.comments {
-		if c.author == login && !c.isMinimized && strings.Contains(c.body, client.HTMLCommentID()) {
+		if c.author == login && strings.Contains(c.body, client.HTMLCommentID()) {
+			comments = append(comments, c)
+		}
+	}
+
+	commentsLen := len(comments)
+
+	for i, c := range comments {
+		if commentsLen-i <= client.Left {
+			break
+		}
+
+		if !c.isMinimized {
+
 			err := client.minimizeComment(ctx, c.id)
 
 			if err != nil {
@@ -87,6 +104,7 @@ func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) 
 		ID          githubv4.ID
 		Body        string
 		IsMinimized bool
+		CreatedAt   githubv4.DateTime
 		Author      struct {
 			Login string
 		}
@@ -135,14 +153,16 @@ func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) 
 	}
 
 	for _, c := range allComments {
-
 		pr.comments = append(pr.comments, pullRequestComment{
 			id:          c.ID,
 			body:        c.Body,
 			isMinimized: c.IsMinimized,
+			createdAt:   c.CreatedAt,
 			author:      c.Author.Login,
 		})
 	}
+
+	slices.SortFunc(pr.comments, func(i, j pullRequestComment) int { return i.createdAt.Compare(j.createdAt.Time) })
 
 	return pr, nil
 }
