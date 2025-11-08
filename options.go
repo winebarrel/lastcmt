@@ -10,6 +10,7 @@ type Options struct {
 	Number int    `short:"n" required:"" help:"Issues/PR number."`
 	Key    string `short:"k" default:"lastcmt" help:"Identification key."`
 	Token  string `required:"" env:"GITHUB_TOKEN" help:"Auth token."`
+	Left   int    `default:"0" help:"Number of comments not minimized."`
 }
 
 func (options *Options) HTMLCommentID() string {
