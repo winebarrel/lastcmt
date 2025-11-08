@@ -22,3 +22,9 @@ Flags:
       --left=0           Number of comments not minimized.
       --version
 ```
+
+## Installation
+
+```sh
+go install github.com/winebarrel/lastcmt/cmd/lastcmt@latest
+```
