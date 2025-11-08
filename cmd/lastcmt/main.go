@@ -19,8 +19,8 @@ func init() {
 func parseArgs() (string, *lastcmt.Options) {
 	var cli struct {
 		lastcmt.Options
-		Body    kong.FileContentFlag `arg:"" required:"" type:"filecontent" help:"Comment body file. '-' is accepted for stdin."`
-		Version kong.VersionFlag
+		BodyFile kong.FileContentFlag `arg:"" required:"" type:"filecontent" help:"Comment body file. '-' is accepted for stdin."`
+		Version  kong.VersionFlag
 	}
 
 	parser := kong.Must(&cli, kong.Vars{"version": version})
@@ -28,7 +28,7 @@ func parseArgs() (string, *lastcmt.Options) {
 	_, err := parser.Parse(os.Args[1:])
 	parser.FatalIfErrorf(err)
 
-	return string(cli.Body), &cli.Options
+	return string(cli.BodyFile), &cli.Options
 }
 
 func main() {
