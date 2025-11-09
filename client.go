@@ -61,22 +61,8 @@ func (client *Client) CommentWithMinimize(ctx context.Context, body string) (str
 		return "", err
 	}
 
-	comments := []pullRequestComment{}
-
 	for _, c := range pr.comments {
-		if c.author == login && strings.Contains(c.body, client.HTMLCommentID()) {
-			comments = append(comments, c)
-		}
-	}
-
-	commentsLen := len(comments)
-
-	for i, c := range comments {
-		if commentsLen-i <= client.Left {
-			break
-		}
-
-		if !c.isMinimized {
+		if c.author == login && !c.isMinimized && strings.Contains(c.body, client.HTMLCommentID()) {
 			err := client.minimizeComment(ctx, c.id)
 
 			if err != nil {
