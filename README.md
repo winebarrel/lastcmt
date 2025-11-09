@@ -19,7 +19,6 @@ Flags:
   -n, --number=INT       Pull Request number.
   -k, --key="lastcmt"    Identification key.
       --token=STRING     Auth token ($GITHUB_TOKEN).
-      --left=0           Number of comments not minimized.
       --version
 ```
 
