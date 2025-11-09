@@ -16,7 +16,7 @@ checksum:
 nfpms:
   - file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Arch }}"
     homepage: https://github.com/winebarrel/lastcmt
-    description: lastcmt is a CLI that comments on a Pull Request and minimizes previous comments.
+    description: lastcmt is a CLI that comments on a pull request and minimizes previous comments.
     license: MIT
     maintainer: "Genki Sugawara <sugawara@winebarrel.jp>"
     formats:
