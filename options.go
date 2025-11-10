@@ -2,6 +2,7 @@ package lastcmt
 
 import (
 	"fmt"
+	"html"
 )
 
 type Options struct {
@@ -13,5 +14,5 @@ type Options struct {
 }
 
 func (options *Options) HTMLCommentID() string {
-	return fmt.Sprintf("<!-- lastcmt: %s -->", options.Key)
+	return fmt.Sprintf("<!-- lastcmt: %s -->", html.EscapeString(options.Key))
 }
