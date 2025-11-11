@@ -29,12 +29,11 @@ func parseArgs() (string, *lastcmt.Options) {
 	args := os.Args[1:]
 	_, err := parser.Parse(args)
 
+	parser.FatalIfErrorf(err)
+
 	if !cli.MinimizeOnly && len(args) == 0 {
 		parser.FatalIfErrorf(errors.New(`expected "<body-file>"`))
 	}
-
-	parser.FatalIfErrorf(err)
-
 	return string(cli.BodyFile), &cli.Options
 }
 
