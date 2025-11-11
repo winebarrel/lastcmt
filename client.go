@@ -38,6 +38,7 @@ type pullRequestComment struct {
 
 type pullRequest struct {
 	id       githubv4.ID
+	url      string
 	comments []pullRequestComment
 }
 
@@ -54,11 +55,15 @@ func (client *Client) CommentWithMinimize(ctx context.Context, body string) (str
 		return "", err
 	}
 
-	bodyWithID := client.HTMLCommentID() + "\n" + body
-	url, err := client.createComment(ctx, pr.id, bodyWithID)
+	url := pr.url
 
-	if err != nil {
-		return "", err
+	if !client.MinimizeOnly {
+		bodyWithID := client.HTMLCommentID() + "\n" + body
+		url, err = client.createComment(ctx, pr.id, bodyWithID)
+
+		if err != nil {
+			return "", err
+		}
 	}
 
 	for _, c := range pr.comments {
@@ -108,6 +113,7 @@ func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) 
 		Repository struct {
 			PullRequest struct {
 				Id       githubv4.ID
+				URL      string
 				Comments struct {
 					Nodes    []comment
 					PageInfo struct {
@@ -137,6 +143,7 @@ func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) 
 		}
 
 		pr.id = q.Repository.PullRequest.Id
+		pr.url = q.Repository.PullRequest.URL
 		allComments = append(allComments, q.Repository.PullRequest.Comments.Nodes...)
 
 		if !q.Repository.PullRequest.Comments.PageInfo.HasNextPage {
