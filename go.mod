@@ -3,7 +3,7 @@ module github.com/winebarrel/lastcmt
 go 1.25
 
 require (
-	github.com/alecthomas/kong v1.12.1
+	github.com/alecthomas/kong v1.13.0
 	github.com/shurcooL/githubv4 v0.0.0-20240727222349-48295856cce7
 	golang.org/x/oauth2 v0.33.0
 )
