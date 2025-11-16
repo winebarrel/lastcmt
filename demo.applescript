@@ -1,5 +1,5 @@
 #!osascript
-# NOTE: Changing the title of the target iTerm window
+# NOTE: Before running this script, manually set the title of the target iTerm window to 'lastcmt demo'
 
 tell application "iTerm"
   set winlist to every window
