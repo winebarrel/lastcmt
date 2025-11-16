@@ -157,26 +157,30 @@ func (client *Client) getIssueOrPullRequest(ctx context.Context) (*issueOrPullRe
 			return nil, err
 		}
 
-		if q.Repository.IssueOrPullRequest.Issue.Id != nil {
-			issueOrPR.id = q.Repository.IssueOrPullRequest.Issue.Id
-			issueOrPR.url = q.Repository.IssueOrPullRequest.Issue.URL
-			allComments = append(allComments, q.Repository.IssueOrPullRequest.Issue.Comments.Nodes...)
+		qIssueOrPR := q.Repository.IssueOrPullRequest
 
-			if !q.Repository.IssueOrPullRequest.Issue.Comments.PageInfo.HasNextPage {
+		if qIssueOrPR.Issue.Id != nil {
+			issue := qIssueOrPR.Issue
+			issueOrPR.id = issue.Id
+			issueOrPR.url = issue.URL
+			allComments = append(allComments, issue.Comments.Nodes...)
+
+			if !issue.Comments.PageInfo.HasNextPage {
 				break
 			}
 
-			variables["issueCursor"] = githubv4.NewString(q.Repository.IssueOrPullRequest.PullRequest.Comments.PageInfo.EndCursor)
-		} else if q.Repository.IssueOrPullRequest.PullRequest.Id != nil {
-			issueOrPR.id = q.Repository.IssueOrPullRequest.PullRequest.Id
-			issueOrPR.url = q.Repository.IssueOrPullRequest.PullRequest.URL
-			allComments = append(allComments, q.Repository.IssueOrPullRequest.PullRequest.Comments.Nodes...)
+			variables["issueCursor"] = githubv4.NewString(issue.Comments.PageInfo.EndCursor)
+		} else if qIssueOrPR.PullRequest.Id != nil {
+			pr := qIssueOrPR.PullRequest
+			issueOrPR.id = pr.Id
+			issueOrPR.url = pr.URL
+			allComments = append(allComments, pr.Comments.Nodes...)
 
-			if !q.Repository.IssueOrPullRequest.PullRequest.Comments.PageInfo.HasNextPage {
+			if !pr.Comments.PageInfo.HasNextPage {
 				break
 			}
 
-			variables["pullRequestCursor"] = githubv4.NewString(q.Repository.IssueOrPullRequest.PullRequest.Comments.PageInfo.EndCursor)
+			variables["pullRequestCursor"] = githubv4.NewString(pr.Comments.PageInfo.EndCursor)
 		} else {
 			return nil, fmt.Errorf("Could not resolve to an issue or pull request with the number of %d.", client.Number) //nolint:staticcheck
 		}
