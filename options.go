@@ -6,8 +6,8 @@ import (
 )
 
 type Options struct {
-	Owner        string `short:"o" required:"" help:"Owner name."`
-	Repo         string `short:"r" required:"" help:"Repo name."`
+	Owner        string `short:"o" required:"" env:"GITHUB_OWNER" help:"Owner name."`
+	Repo         string `short:"r" required:"" env:"GITHUB_REPO" help:"Repo name."`
 	Number       int    `short:"n" required:"" help:"Issue/Pull Request number."`
 	Key          string `short:"k" default:"lastcmt" help:"Identification key."`
 	MinimizeOnly bool   `short:"m" negatable:"" help:"Minimize only."`

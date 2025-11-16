@@ -14,8 +14,8 @@ Arguments:
 
 Flags:
   -h, --help                  Show help.
-  -o, --owner=STRING          Owner name.
-  -r, --repo=STRING           Repo name.
+  -o, --owner=STRING          Owner name ($GITHUB_OWNER).
+  -r, --repo=STRING           Repo name ($GITHUB_REPO).
   -n, --number=INT            Issue/Pull Request number.
   -k, --key="lastcmt"         Identification key.
   -m, --[no-]minimize-only    Minimize only.
