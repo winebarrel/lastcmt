@@ -2,6 +2,7 @@ package lastcmt
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"slices"
 	"strings"
@@ -28,7 +29,7 @@ func NewClient(ctx context.Context, options *Options) *Client {
 	return client
 }
 
-type pullRequestComment struct {
+type issueOrPullRequestComment struct {
 	id          githubv4.ID
 	body        string
 	isMinimized bool
@@ -36,10 +37,10 @@ type pullRequestComment struct {
 	author      string
 }
 
-type pullRequest struct {
+type issueOrPullRequest struct {
 	id       githubv4.ID
 	url      string
-	comments []pullRequestComment
+	comments []issueOrPullRequestComment
 }
 
 func (client *Client) CommentWithMinimize(ctx context.Context, body string) (string, error) {
@@ -49,7 +50,7 @@ func (client *Client) CommentWithMinimize(ctx context.Context, body string) (str
 		return "", err
 	}
 
-	pr, err := client.getPullRequest(ctx)
+	pr, err := client.getIssueOrPullRequest(ctx)
 
 	if err != nil {
 		return "", err
@@ -98,7 +99,7 @@ func (client *Client) getViewer(ctx context.Context) (string, error) {
 	return login, nil
 }
 
-func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) {
+func (client *Client) getIssueOrPullRequest(ctx context.Context) (*issueOrPullRequest, error) {
 	type comment struct {
 		ID          githubv4.ID
 		Body        string
@@ -111,28 +112,42 @@ func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) 
 
 	var q struct {
 		Repository struct {
-			PullRequest struct {
-				Id       githubv4.ID
-				URL      string
-				Comments struct {
-					Nodes    []comment
-					PageInfo struct {
-						EndCursor   githubv4.String
-						HasNextPage bool
-					}
-				} `graphql:"comments(first: 100, after: $cursor)"`
-			} `graphql:"pullRequest(number: $number)"`
+			IssueOrPullRequest struct {
+				Issue struct {
+					Id       githubv4.ID
+					URL      string
+					Comments struct {
+						Nodes    []comment
+						PageInfo struct {
+							EndCursor   githubv4.String
+							HasNextPage bool
+						}
+					} `graphql:"comments(first: 100, after: $issueCursor)"`
+				} `graphql:"... on Issue"`
+				PullRequest struct {
+					Id       githubv4.ID
+					URL      string
+					Comments struct {
+						Nodes    []comment
+						PageInfo struct {
+							EndCursor   githubv4.String
+							HasNextPage bool
+						}
+					} `graphql:"comments(first: 100, after: $pullRequestCursor)"`
+				} `graphql:"... on PullRequest"`
+			} `graphql:"issueOrPullRequest(number: $number)"`
 		} `graphql:"repository(owner: $owner, name: $repo)"`
 	}
 
 	variables := map[string]any{
-		"owner":  githubv4.String(client.Owner),
-		"repo":   githubv4.String(client.Repo),
-		"number": githubv4.Int(client.Number),
-		"cursor": (*githubv4.String)(nil),
+		"owner":             githubv4.String(client.Owner),
+		"repo":              githubv4.String(client.Repo),
+		"number":            githubv4.Int(client.Number),
+		"issueCursor":       (*githubv4.String)(nil),
+		"pullRequestCursor": (*githubv4.String)(nil),
 	}
 
-	pr := &pullRequest{}
+	issueOrPR := &issueOrPullRequest{}
 	var allComments []comment
 
 	for {
@@ -142,19 +157,33 @@ func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) 
 			return nil, err
 		}
 
-		pr.id = q.Repository.PullRequest.Id
-		pr.url = q.Repository.PullRequest.URL
-		allComments = append(allComments, q.Repository.PullRequest.Comments.Nodes...)
+		if q.Repository.IssueOrPullRequest.Issue.Id != nil {
+			issueOrPR.id = q.Repository.IssueOrPullRequest.Issue.Id
+			issueOrPR.url = q.Repository.IssueOrPullRequest.Issue.URL
+			allComments = append(allComments, q.Repository.IssueOrPullRequest.Issue.Comments.Nodes...)
 
-		if !q.Repository.PullRequest.Comments.PageInfo.HasNextPage {
-			break
+			if !q.Repository.IssueOrPullRequest.Issue.Comments.PageInfo.HasNextPage {
+				break
+			}
+
+			variables["issueCursor"] = githubv4.NewString(q.Repository.IssueOrPullRequest.PullRequest.Comments.PageInfo.EndCursor)
+		} else if q.Repository.IssueOrPullRequest.PullRequest.Id != nil {
+			issueOrPR.id = q.Repository.IssueOrPullRequest.PullRequest.Id
+			issueOrPR.url = q.Repository.IssueOrPullRequest.PullRequest.URL
+			allComments = append(allComments, q.Repository.IssueOrPullRequest.PullRequest.Comments.Nodes...)
+
+			if !q.Repository.IssueOrPullRequest.PullRequest.Comments.PageInfo.HasNextPage {
+				break
+			}
+
+			variables["pullRequestCursor"] = githubv4.NewString(q.Repository.IssueOrPullRequest.PullRequest.Comments.PageInfo.EndCursor)
+		} else {
+			return nil, fmt.Errorf("Could not resolve to an issue or pull request with the number of %d.", client.Number) //nolint:staticcheck
 		}
-
-		variables["commentsCursor"] = githubv4.NewString(q.Repository.PullRequest.Comments.PageInfo.EndCursor)
 	}
 
 	for _, c := range allComments {
-		pr.comments = append(pr.comments, pullRequestComment{
+		issueOrPR.comments = append(issueOrPR.comments, issueOrPullRequestComment{
 			id:          c.ID,
 			body:        c.Body,
 			isMinimized: c.IsMinimized,
@@ -163,9 +192,9 @@ func (client *Client) getPullRequest(ctx context.Context) (*pullRequest, error) 
 		})
 	}
 
-	slices.SortFunc(pr.comments, func(i, j pullRequestComment) int { return i.createdAt.Compare(j.createdAt) })
+	slices.SortFunc(issueOrPR.comments, func(i, j issueOrPullRequestComment) int { return i.createdAt.Compare(j.createdAt) })
 
-	return pr, nil
+	return issueOrPR, nil
 }
 
 func (client *Client) createComment(ctx context.Context, prID githubv4.ID, body string) (string, error) {
