@@ -23,6 +23,10 @@ Flags:
       --version
 ```
 
+## Download
+
+https://github.com/winebarrel/lastcmt/releases/latest
+
 ## Installation
 
 ```sh
