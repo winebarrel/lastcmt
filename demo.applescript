@@ -12,17 +12,15 @@ tell application "iTerm"
         tell current session of current tab
           write text "clear"
           delay 5
-          write text "export GITHUB_OWNER=winebarrel"
+          write text "export GITHUB_REPOSITORY=winebarrel/hello-world"
           delay 1
-          write text "export GITHUB_REPO=hello-world"
-          delay 1
-          write text "echo 'こんにちは' | lastcmt -n 12 -"
+          write text "echo 'こんにちは' | lastcmt 12"
           delay 5
-          write text "echo '今日は' | lastcmt -n 12 -"
+          write text "echo '今日は' | lastcmt 12"
           delay 5
-          write text "gh pr comment -R winebarrel/hello-world 12 -b 'gh comment' > /dev/null"
+          write text "gh pr comment -R winebarrel/hello-world 12 -b 'gh CLI comment (not minimized)' > /dev/null"
           delay 5
-          write text "echo 'こんばんは' | lastcmt -n 12 -"
+          write text "echo 'こんばんは' | lastcmt 12"
         end tell
       end tell
     end if
