@@ -1,0 +1,21 @@
+name: install-lastcmt
+description: Install the lastcmt CLI tool for commenting on GitHub issues and pull requests
+inputs:
+  version:
+    description: The lastcmt version to install
+    default: 0.6.0
+    required: false
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        set -e
+        VERSION="${{ inputs.version }}"
+        ARCH=$(dpkg --print-architecture)
+        cd /tmp
+        curl -sSflo lastcmt.tgz https://github.com/winebarrel/lastcmt/releases/download/v${VERSION}/lastcmt_${VERSION}_linux_${ARCH}.tar.gz
+        tar zxf lastcmt.tgz
+        mkdir -p "${RUNNER_TOOL_CACHE}/lastcmt"
+        sudo install lastcmt "${RUNNER_TOOL_CACHE}/lastcmt/lastcmt"
+        echo "${RUNNER_TOOL_CACHE}/lastcmt" >> $GITHUB_PATH
