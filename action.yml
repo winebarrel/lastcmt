@@ -16,6 +16,6 @@ runs:
         cd /tmp
         curl -sSflo lastcmt.tgz https://github.com/winebarrel/lastcmt/releases/download/v${VERSION}/lastcmt_${VERSION}_linux_${ARCH}.tar.gz
         tar zxf lastcmt.tgz
-        mkdir -p ${RUNNER_TOOL_CACHE}/lastcmt
-        sudo install lastcmt ${RUNNER_TOOL_CACHE}/lastcmt/lastcmt
+        mkdir -p "${RUNNER_TOOL_CACHE}/lastcmt"
+        sudo install lastcmt "${RUNNER_TOOL_CACHE}/lastcmt/lastcmt"
         echo "${RUNNER_TOOL_CACHE}/lastcmt" >> $GITHUB_PATH
