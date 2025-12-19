@@ -3,7 +3,7 @@ description: Install the lastcmt CLI tool for commenting on GitHub issues and pu
 inputs:
   version:
     description: The lastcmt version to install
-    default: 0.6.1
+    default: 0.6.2
     required: false
 runs:
   using: composite
