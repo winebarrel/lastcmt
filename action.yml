@@ -2,7 +2,7 @@ name: install-lastcmt
 description: Install the lastcmt CLI tool for commenting on GitHub issues and pull requests
 inputs:
   version:
-    description: version
+    description: The lastcmt version to install
     default: 0.6.0
     required: false
 runs:
