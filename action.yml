@@ -1,5 +1,5 @@
-name: install-lastcmnt
-description: Install lastcmnt
+name: install-lastcmt
+description: Install lastcmt
 inputs:
   version:
     description: version
