@@ -14,7 +14,7 @@ runs:
         VERSION="${{ inputs.version }}"
         ARCH=$(dpkg --print-architecture)
         cd /tmp
-        curl -sSflo lastcmt.tgz https://github.com/winebarrel/lastcmt/releases/download/v${VERSION}/lastcmt_${VERSION}_linux_${ARCH}.tar.gz
+        curl -sSfLo lastcmt.tgz https://github.com/winebarrel/lastcmt/releases/download/v${VERSION}/lastcmt_${VERSION}_linux_${ARCH}.tar.gz
         tar zxf lastcmt.tgz
         mkdir -p "${RUNNER_TOOL_CACHE}/lastcmt"
         sudo install lastcmt "${RUNNER_TOOL_CACHE}/lastcmt/lastcmt"
