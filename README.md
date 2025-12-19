@@ -2,7 +2,7 @@
 
 lastcmt is a CLI that comments on a issue/pull request and minimizes previous comments.
 
-![demo](https://github.com/user-attachments/assets/0da3da2f-f649-4563-84bf-b7c7cb7d9f82)
+![demo](https://github.com/user-attachments/assets/769a4922-28b4-4975-b549-d3b5681aa07c)
 
 ## Usage
 
