@@ -1,5 +1,5 @@
 name: install-lastcmt
-description: Install lastcmt
+description: Install the lastcmt CLI tool for commenting on GitHub issues and pull requests
 inputs:
   version:
     description: version
