@@ -10,7 +10,7 @@ runs:
   steps:
     - shell: bash
       run: |
-        set -e
+        set -exo pipefail
         VERSION="${{ inputs.version }}"
         ARCH=$(dpkg --print-architecture)
         cd /tmp
