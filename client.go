@@ -140,8 +140,8 @@ func (client *Client) getIssueOrPullRequest(ctx context.Context) (*issueOrPullRe
 	}
 
 	variables := map[string]any{
-		"owner":             githubv4.String(client.Owner),
-		"repo":              githubv4.String(client.Repo),
+		"owner":             githubv4.String(client.Repo.Owner()),
+		"repo":              githubv4.String(client.Repo.Name()),
 		"number":            githubv4.Int(client.Number),
 		"issueCursor":       (*githubv4.String)(nil),
 		"pullRequestCursor": (*githubv4.String)(nil),

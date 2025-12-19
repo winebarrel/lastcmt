@@ -7,19 +7,18 @@ lastcmt is a CLI that comments on a issue/pull request and minimizes previous co
 ## Usage
 
 ```
-Usage: lastcmt --owner=STRING --repo=STRING --number=INT --token=STRING [<body-file>] [flags]
+Usage: lastcmt --repo=REPO --token=STRING <number> [<body-file>] [flags]
 
 Arguments:
-  [<body-file>]    Comment body file. '-' is accepted for stdin.
+  <number>         Issue/Pull Request number.
+  [<body-file>]    Comment body file. If not specified, read from stdin.
 
 Flags:
   -h, --help                  Show help.
-  -o, --owner=STRING          Owner name ($GITHUB_OWNER).
-  -r, --repo=STRING           Repo name ($GITHUB_REPO).
-  -n, --number=INT            Issue/Pull Request number.
+  -R, --repo=REPO             OWNER/REPO ($GITHUB_REPOSITORY)
   -k, --key="lastcmt"         Identification key.
   -m, --[no-]minimize-only    Minimize only.
-      --token=STRING          Auth token ($GITHUB_TOKEN).
+      --token=STRING          Auth token ($GH_TOKEN, $GITHUB_TOKEN).
       --version
 ```
 

@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 
@@ -20,20 +20,26 @@ func init() {
 func parseArgs() (string, *lastcmt.Options) {
 	var cli struct {
 		lastcmt.Options
-		BodyFile kong.FileContentFlag `arg:"" optional:"" type:"filecontent" help:"Comment body file. '-' is accepted for stdin."`
+		BodyFile kong.FileContentFlag `arg:"" optional:"" type:"filecontent" xor:"stdin" help:"Comment body file. If not specified, read from stdin."`
 		Version  kong.VersionFlag
 	}
 
 	parser := kong.Must(&cli, kong.Vars{"version": version})
 	parser.Model.HelpFlag.Help = "Show help."
 	args := os.Args[1:]
-	_, err := parser.Parse(args)
 
-	parser.FatalIfErrorf(err)
-
-	if !cli.MinimizeOnly && len(args) == 0 {
-		parser.FatalIfErrorf(errors.New(`expected "<body-file>"`))
+	if _, err := parser.Parse(args); err != nil {
+		parser.FatalIfErrorf(err)
 	}
+
+	if len(args) == 1 && !cli.MinimizeOnly {
+		if stdin, err := io.ReadAll(os.Stdin); err != nil {
+			parser.FatalIfErrorf(err)
+		} else {
+			cli.BodyFile = stdin
+		}
+	}
+
 	return string(cli.BodyFile), &cli.Options
 }
 
