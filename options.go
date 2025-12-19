@@ -23,11 +23,19 @@ func (repo Repo) Validate() error {
 }
 
 func (repo Repo) Owner() string {
-	return repo.split()[0]
+	parts := repo.split()
+	if len(parts) > 0 {
+		return parts[0]
+	}
+	return ""
 }
 
 func (repo Repo) Name() string {
-	return repo.split()[1]
+	parts := repo.split()
+	if len(parts) > 1 {
+		return parts[1]
+	}
+	return ""
 }
 
 type Options struct {
