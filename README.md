@@ -31,3 +31,25 @@ https://github.com/winebarrel/lastcmt/releases/latest
 ```sh
 go install github.com/winebarrel/lastcmt/cmd/lastcmt@latest
 ```
+
+## GitHub Actions
+
+```yaml
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  pull-requests: write
+
+jobs:
+  my-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: winebarrel/lastcmt@v0.6.2
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo test | lastcmt ${{ github.event.number }}
+```
