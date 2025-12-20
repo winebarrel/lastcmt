@@ -16,7 +16,7 @@ Arguments:
 Flags:
   -h, --help                  Show help.
   -R, --repo=REPO             OWNER/REPO ($GITHUB_REPOSITORY)
-  -k, --key="lastcmt"         Identification key.
+  -k, --key="lastcmt"         Identification key ($LASTCMT_KEY).
   -m, --[no-]minimize-only    Minimize only.
       --token=STRING          Auth token ($GH_TOKEN, $GITHUB_TOKEN).
       --version
@@ -47,7 +47,7 @@ jobs:
   my-job:
     runs-on: ubuntu-latest
     steps:
-      - uses: winebarrel/lastcmt@v0.6.2
+      - uses: winebarrel/lastcmt@v0.6.3
       - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

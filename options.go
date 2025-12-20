@@ -41,7 +41,7 @@ func (repo Repo) Name() string {
 type Options struct {
 	Repo         Repo   `short:"R" required:"" env:"GITHUB_REPOSITORY" help:"OWNER/REPO"`
 	Number       int    `arg:"" required:"" help:"Issue/Pull Request number."`
-	Key          string `short:"k" default:"lastcmt" help:"Identification key."`
+	Key          string `short:"k" default:"lastcmt" env:"LASTCMT_KEY" help:"Identification key."`
 	MinimizeOnly bool   `short:"m" negatable:"" xor:"stdin" help:"Minimize only."`
 	Token        string `required:"" env:"GH_TOKEN,GITHUB_TOKEN" help:"Auth token."`
 }
