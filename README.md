@@ -47,7 +47,7 @@ jobs:
   my-job:
     runs-on: ubuntu-latest
     steps:
-      - uses: winebarrel/lastcmt@v0.6.3
+      - uses: winebarrel/lastcmt@v0.6.4
       - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
