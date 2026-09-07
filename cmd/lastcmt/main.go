@@ -32,7 +32,7 @@ func parseArgs() (string, *lastcmt.Options) {
 		parser.FatalIfErrorf(err)
 	}
 
-	if len(args) == 1 && !cli.MinimizeOnly {
+	if cli.BodyFile == nil && !cli.MinimizeOnly {
 		if stdin, err := io.ReadAll(os.Stdin); err != nil {
 			parser.FatalIfErrorf(err)
 		} else {
